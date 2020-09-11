@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+</head>
+
+
+
+<body>
+    <div id="output"></div>
+    <div class="container">
+        <button class="btn btn-primary mt-4" id="getcricket">Get Cricketers</button>
+
+        <form id="addcricket" class="mt-4 mb-4">
+            <div class="form-group">
+                <input type="text" id="name" class="form-control" placeholder="Name">
+            </div>
+            <div class="form-group">
+                <input type="text" id="age" class="form-control" placeholder="Age">
+            </div>
+            <div class="form-group">
+                <input type="text" id="qualification" class="form-control" placeholder="Qualification">
+            </div>
+            <div class="form-group">
+                <input type="text" id="designation" class="form-control" placeholder="Designation">
+            </div>
+
+            <input type="submit" class="btn btn-success" value="Submit">
+        </form>
+    </div>
+
+    <div class="container">
+        <table class="table table-stripped">
+            <thead class="bg-primary text-white">
+                <tr>
+                    <th>Sno</th>
+                    <th>Name</th>
+                    <th>Age</th>
+                    <th>Qualification</th>
+                    <th>Designation</th>
+                </tr>
+            </thead>
+            <tbody id="output1">
+            
+
+            </tbody>
+        </table>
+    </div>
+    <script>
+        document.getElementById('getcricket').addEventListener('click', getCricket)
+        document.getElementById('addcricket').addEventListener('submit', postCricket)
+
+        function getCricket() {
+            fetch("http://localhost:8081/all").then(
+            res=>{
+                res.json().then(data=>{
+                        console.log(data)
+
+                 if(data.length > 0){
+                     var temp="";
+                     data.forEach((cri)=>{
+                         temp +="<tr>";
+                         temp +="<td>"+cri.id+"</td>";
+                         temp +="<td>"+cri.name+"</td>";
+                         temp +="<td>"+cri.age+"</td>";
+                         temp +="<td>"+cri.qualification+"</td>";
+                         temp +="<td>"+cri.designation+"</td></tr>";
+                     })
+                     document.getElementById('output1').innerHTML=temp;
+
+                  }   
+                });
+            });
+        }
+
+        async function postCricket(e) {
+            e.preventDefault();
+
+            let name = document.getElementById('name').value;
+            let age = document.getElementById('age').value;
+            let qualification = document.getElementById('qualification').value;
+            let designation = document.getElementById('designation').value;
+
+            fetch('http://localhost:8081/save', {
+                method: 'POST',
+                headers: {
+                    'Accept': 'application/json, text/plain, */*',
+                    'Content-type': 'application/json'
+                },
+                body: await JSON.
+                    stringify({ name: name, age: age, qualification: qualification, designation: designation })
+            })
+                .then((res) => res.json())
+                .then((data) => console.log(data))
+        }
+        document.write(`</tbody>
+    </table>
+    `)
+
+    </script>
+</body>
+
+</html>
